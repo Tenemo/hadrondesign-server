@@ -22,7 +22,7 @@ const sequelize = new Sequelize(
 );
 sequelize
     .authenticate()
-    .then((err) => {
+    .then(() => {
         console.log(chalkSuccess('Database connection has been established successfully.')); // eslint-disable-line no-console
     })
     .catch(err => {
@@ -36,20 +36,8 @@ fs.readdirSync(modelsDir)
     .forEach((file) => {
         console.log(chalkProcessing(`Loading model file ${file}`)); // eslint-disable-line no-console
         const model = sequelize.import(path.join(modelsDir, file));
-        console.log('JSON db: ' + JSON.stringify(db));
-        console.log('JSON model: ' + JSON.stringify(model));
         db[model.name] = model;
-        console.log('JSON db: ' + JSON.stringify(db));
-        console.log('db: ' + db);
     });
-
-// Synchronizing any model changes with database.
-// sequelize.sync().then(() => {
-//     console.log(chalkSuccess('Database synchronized'));
-// }, (err) => {
-//     console.log(chalkError('An error occured:'));
-//     console.log('%j', err);
-// });
 
 sequelize
     .sync({ force: true })
