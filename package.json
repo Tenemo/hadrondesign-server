@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "nodemon -w server -w index.js --exec \"npm run lint && babel-node index.js\"",
+    "nodemon": "nodemon -w server -w index.js",
+    "lint": "esw index.js server",
+    "lint:watch": "npm run lint -- --watch"
   },
   "repository": {
     "type": "git",
@@ -17,13 +20,26 @@
   },
   "homepage": "https://github.com/tenemo/hadrondesign-server#readme",
   "dependencies": {
-    "express": "^4.16.3"
+    "body-parser": "^1.18.3",
+    "cookie-parser": "^1.4.3",
+    "dotenv": "^5.0.1",
+    "express": "^4.16.3",
+    "express-winston": "^2.5.1",
+    "joi": "^13.3.0",
+    "lodash": "^4.17.10",
+    "morgan": "^1.9.0",
+    "pg": "^7.4.3",
+    "pg-hstore": "^2.3.2",
+    "sequelize": "^4.37.10",
+    "winston": "^2.4.2"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
+    "babel-preset-env": "^1.7.0",
     "eslint": "^4.19.1",
     "eslint-plugin-import": "^2.12.0",
-    "eslint-watch": "^3.1.5"
+    "eslint-watch": "^3.1.5",
+    "nodemon": "^1.17.5"
   }
 }

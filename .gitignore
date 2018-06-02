@@ -59,3 +59,8 @@ typings/
 
 # next.js build output
 .next
+
+# temporary and local development files
+temp/
+dev/
+.vscode/
