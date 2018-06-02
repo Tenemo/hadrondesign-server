@@ -1,5 +1,5 @@
-module.exports = (sequelize, DataType) => {
-    const game = sequelize.define('game', {
+export default (sequelize, DataType) => {
+    const game = sequelize.define('Game', {
         game_id: {
             type: DataType.BIGINT,
             primaryKey: true,

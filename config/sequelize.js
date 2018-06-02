@@ -6,7 +6,7 @@ import config from './config';
 import { chalkSuccess, chalkProcessing, chalkError } from './chalkConfig';
 
 const modelsDir = path.normalize(`${__dirname}/../server/models`);
-const db = {};
+let db = {};
 
 // connect to postgres db
 const sequelize = new Sequelize(
@@ -22,7 +22,7 @@ const sequelize = new Sequelize(
 );
 sequelize
     .authenticate()
-    .then(() => {
+    .then((err) => {
         console.log(chalkSuccess('Database connection has been established successfully.')); // eslint-disable-line no-console
     })
     .catch(err => {
@@ -44,13 +44,22 @@ fs.readdirSync(modelsDir)
     });
 
 // Synchronizing any model changes with database.
-// sequelize
-//     .sync({force: true})
-//     .then((err) => {
-//         //if (err) console.log(chalkError('An error occured %j', JSON.stringify(err))); // eslint-disable-line no-console
-//         if (err) console.log(require('util').inspect(err, {colors:true, depth:2})); // eslint-disable-line no-console
-//         else console.log(chalkSuccess('Database synchronized')); // eslint-disable-line no-console
-//     });
+// sequelize.sync().then(() => {
+//     console.log(chalkSuccess('Database synchronized'));
+// }, (err) => {
+//     console.log(chalkError('An error occured:'));
+//     console.log('%j', err);
+// });
+
+sequelize
+    .sync({ force: true })
+    .then(() => {
+        console.log(chalkSuccess('Database synchronized')); // eslint-disable-line no-console
+    }).catch(err => {
+        console.log(chalkError('Rolled back, an error occured:')); // eslint-disable-line no-console
+        console.log(err); // eslint-disable-line no-console
+    });
+
 export default _.extend({
     sequelize,
     Sequelize,
