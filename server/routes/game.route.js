@@ -1,21 +1,25 @@
 import _ from 'lodash';
+import express from 'express';
+import gameController from '../controllers/game.controller';
 
-export default (app) => {
+const router = express.Router();
 
-    let _game = [];
+gameController.newGame();
 
+let _game = [];
+
+router.route('/')
     /* Create */
-    app.post('/', (req, res) => {
+    .post((req, res) => {
         _game.push(req.body);
         res.json({info: 'game created successfully'});
-    });
-
+    })
     /* Read */
-    app.get('/', (req, res) => {
+    .get((req, res) => {
         res.send(_game);
     });
-
-    app.get('/:id', (res, req) => {
+router.route('/:id')
+    .get((res, req) => {
         res.send(
             _.find(
                 _game,
@@ -24,10 +28,9 @@ export default (app) => {
                 }
             )
         );
-    });
-
+    })
     /* Update */
-    app.put('/:id', (req, res) => {
+    .put((req, res) => {
         let index = _.findIndex(
             _game,
             {
@@ -36,13 +39,13 @@ export default (app) => {
         );
         _.merge(_game[index], req.body);
         res.json({info: 'game updated successfully'});
-    });
-
+    })
     /* Delete */
-    app.delete('/:id', (req, res) => {
+    .delete((req, res) => {
         _.remove(_game, (game) => {
             return game.gameID === req.params.id;
         });
         res.json({info: 'game removed successfully'});
     });
-};
+
+export default router;

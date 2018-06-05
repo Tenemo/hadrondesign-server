@@ -12,6 +12,8 @@ export default (sequelize, DataType) => {
             validate: {
                 notEmpty: true,
             }
+        }, game_isFinished: {
+            type: DataType.BOOLEAN,
         }, game_move_count: {
             type: DataType.INTEGER
         }, game_moves: {
