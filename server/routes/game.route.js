@@ -1,5 +1,7 @@
-import _ from 'lodash';
 import express from 'express';
+import _ from 'lodash';
+import validate from 'express-validation';
+import paramValidation from '../../config/paramValidation';
 import gameController from '../controllers/game.controller';
 
 const router = express.Router();
@@ -8,16 +10,21 @@ gameController.newGame();
 
 let _game = [];
 
+router.route('/new')
+    /** POST /api/game/new - Initialize new game */
+    .post(validate(paramValidation.newGame), gameController.newGame);
+
 router.route('/')
     /* Create */
     .post((req, res) => {
         _game.push(req.body);
-        res.json({info: 'game created successfully'});
+        res.json({ info: 'game created successfully' });
     })
     /* Read */
     .get((req, res) => {
         res.send(_game);
     });
+
 router.route('/:id')
     .get((res, req) => {
         res.send(
@@ -38,14 +45,14 @@ router.route('/:id')
             }
         );
         _.merge(_game[index], req.body);
-        res.json({info: 'game updated successfully'});
+        res.json({ info: 'game updated successfully' });
     })
     /* Delete */
     .delete((req, res) => {
         _.remove(_game, (game) => {
             return game.gameID === req.params.id;
         });
-        res.json({info: 'game removed successfully'});
+        res.json({ info: 'game removed successfully' });
     });
 
 export default router;

@@ -1,19 +1,44 @@
 export default (sequelize, DataType) => {
     const game = sequelize.define('game', {
-        game_id: {
+        game_number: {
             type: DataType.BIGINT,
             primaryKey: true,
             autoIncrement: true
-        }, game_player_name: {
-            type: DataType.STRING(32)
+        }, game_id: {
+            type: DataType.CHAR(32),
+            allowNull: false,
+            validate: {
+                notEmpty: true
+            }
         }, game_size: {
             type: DataType.INTEGER,
             allowNull: false,
             validate: {
-                notEmpty: true,
+                notEmpty: true
+            }
+        }, game_seed: {
+            type: DataType.STRING(256),
+            allowNull: false,
+            validate: {
+                notEmpty: true
+            }
+        }, game_isSeedCustom: {
+            type: DataType.BOOLEAN,
+            allowNull: false,
+            validate: {
+                notEmpty: true
             }
         }, game_isFinished: {
             type: DataType.BOOLEAN,
+            allowNull: false,
+            defaultValue: false,
+            validate: {
+                notEmpty: true
+            }
+        }, game_score: {
+            type: DataType.INTEGER
+        }, game_player_name: {
+            type: DataType.STRING(32)
         }, game_move_count: {
             type: DataType.INTEGER
         }, game_moves: {
@@ -22,22 +47,10 @@ export default (sequelize, DataType) => {
             type: DataType.DATE,
             allowNull: false,
             validate: {
-                notEmpty: true,
+                notEmpty: true
             }
         }, game_end_time: {
             type: DataType.DATE
-        }, game_seed: {
-            type: DataType.STRING(256),
-            allowNull: false,
-            validate: {
-                notEmpty: true,
-            }
-        }, game_hash: {
-            type: DataType.CHAR(32),
-            allowNull: false,
-            validate: {
-                notEmpty: true,
-            }
         }
     },
         { freezeTableName: true }

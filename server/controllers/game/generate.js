@@ -1,3 +1,5 @@
+import seedrandom from 'seedrandom';
+
 /**
  * Inserts a single cross at given coordinates, updating blankCount and flipping all adjacent potentially conflicting tiles to 2
  * @param  {object} board - Current board state
@@ -28,7 +30,7 @@ function generateCross(board, y, x) {
         board.tiles[y][x + 1] = 1;
     }
 
-    // flips existing squares and whatnot
+    // changes surrounding, potentially conflicting, tiles to 2's
     // it works great but i forgot how half an hour after writing and debugging this
     for (let i = -1; i < 2; i += 2) {
         if (y + i > -1 && y + i < board.size && x + i > -1 && x + i < board.size) {
@@ -110,6 +112,7 @@ function mixIns(board) {
 
     let randMixY = Math.floor(Math.random() * (board.size - mix1.length + 3));
     let randMixX = Math.floor(Math.random() * (board.size - mix1.length + 3));
+    console.log('RANDOM IN MIXINS: ' + Math.random());
 
     // iterating over mix-in, flipping safe-to-flip tiles, so the output tiles are solvable
     for (let i = 0; i < mix1.length; i++) {
@@ -126,9 +129,10 @@ function mixIns(board) {
 /**
  * Responsible for generating boards
  * @param {number} size - Requested size of a new board
+ * @param {string} seed - Optional seed for board generation, current date by default
  * @returns {object} - Generated board
  */
-function generate(size) {
+function generate(size, seed = Date.now()) {
 
     /**
      * Main board object, containing current game state
@@ -139,8 +143,11 @@ function generate(size) {
     let board = {
         size: size,
         tiles: [],
-        blankCount: size * size
+        blankCount: size * size,
+        seed : seed.toString()
     };
+    console.log(board.seed);
+    Math.seedrandom(board.seed);
 
     // setting board.tiles array size and filling it with blanks, 0's
     for (let i = 0; i < size; i++) {
@@ -155,6 +162,9 @@ function generate(size) {
     while (board.blankCount > 0) {
         board = nextStep(board);
     }
+
+    // remove blankCount property, useful only for generating the board and debugging, it's always 0 after generating
+    delete board.blankCount;
 
     return board;
 }

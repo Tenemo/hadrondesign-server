@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import _ from 'lodash';
 import config from './config';
-import { chalkSuccess, chalkProcessing, chalkError } from './chalkConfig';
+import { chalkSuccess, chalkWarning, chalkProcessing, chalkError } from './chalkConfig';
 
 const modelsDir = path.normalize(`${__dirname}/../server/models`);
 let db = {};
@@ -42,6 +42,7 @@ fs.readdirSync(modelsDir)
 sequelize
     .sync({ force: true })
     .then(() => {
+        console.log(chalkWarning('Old database dropped!'));
         console.log(chalkSuccess('Database synchronized')); // eslint-disable-line no-console
     }).catch(err => {
         console.log(chalkError('Rolled back, an error occured:')); // eslint-disable-line no-console
