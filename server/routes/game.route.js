@@ -6,11 +6,15 @@ import gameController from '../controllers/game.controller';
 const router = express.Router();
 
 router.route('/new')
-    /** POST /api/game/new - Initialize new game */
+    /* POST /api/game/new - Initialize new game */
     .post(validate(paramValidation.newGame), gameController.newGame);
 
 router.route('/:id')
     /* PUT /api/game/:id - Win given game */
     .put(validate(paramValidation.winGame), gameController.winGame);
+
+router.route('/highScores')
+    /* GET /api/game/highScores - Get highscores */
+    .get(gameController.fakeData);
 
 export default router;

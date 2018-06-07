@@ -5,6 +5,8 @@ import _ from 'lodash';
 import config from './config';
 import { chalkSuccess, chalkWarning, chalkProcessing, chalkError } from './chalkConfig';
 
+import { fakeData } from '../server/controllers/game.controller'
+
 const modelsDir = path.normalize(`${__dirname}/../server/models`);
 let db = {};
 
@@ -17,7 +19,12 @@ const sequelize = new Sequelize(
         dialect: 'postgres',
         port: config.postgres.port,
         host: config.postgres.host,
-        operatorsAliases: false
+        operatorsAliases: false,
+        pool: {
+            max: 10,
+            idle: 30000,
+            acquire: 3600 * 1000 * 6,
+        },
     }
 );
 sequelize
@@ -45,6 +52,7 @@ sequelize
     .then(() => {
         //console.log(chalkWarning('Old database dropped!'));
         console.log(chalkSuccess('Database synchronized')); // eslint-disable-line no-console
+        //fakeData();
     }).catch(err => {
         console.log(chalkError('Rolled back, an error occured:')); // eslint-disable-line no-console
         console.log(err); // eslint-disable-line no-console

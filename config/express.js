@@ -10,6 +10,13 @@ import routes from '../server/routes/index.route';
 import config from './config';
 import APIError from '../server/helpers/APIError';
 
+import Promise from 'bluebird';
+Promise.config({
+    warnings: {
+        wForgottenReturn: false
+    }
+});
+
 const app = express();
 
 if (config.env === 'development') {
