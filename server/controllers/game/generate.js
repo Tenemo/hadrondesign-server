@@ -112,7 +112,6 @@ function mixIns(board) {
 
     let randMixY = Math.floor(Math.random() * (board.size - mix1.length + 3));
     let randMixX = Math.floor(Math.random() * (board.size - mix1.length + 3));
-    console.log('RANDOM IN MIXINS: ' + Math.random());
 
     // iterating over mix-in, flipping safe-to-flip tiles, so the output tiles are solvable
     for (let i = 0; i < mix1.length; i++) {
@@ -144,10 +143,8 @@ function generate(size, seed = Date.now()) {
         size: size,
         tiles: [],
         blankCount: size * size,
-        seed : seed.toString()
+        seed : seed
     };
-    console.log(board.seed);
-    Math.seedrandom(board.seed);
 
     // setting board.tiles array size and filling it with blanks, 0's
     for (let i = 0; i < size; i++) {

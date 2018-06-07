@@ -2,12 +2,12 @@
   "name": "hadrondesign-server",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
-    "start": "nodemon -w config -w server -w index.js --exec \"npm run lint && babel-node index.js\"",
-    "nodemon": "nodemon -w config -w server -w index.js",
-    "lint": "esw index.js server",
-    "lint:watch": "npm run lint -- --watch"
+    "start": "nodemon -w config -w server -w server/server.js --exec \"babel-node server/server.js\"",
+    "nodemon": "nodemon -w config -w server -w server/server.js",
+    "lint": "esw server/server.js server",
+    "lint:watch": "npm run lint -- --watch",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -30,6 +30,7 @@
     "http-status": "^1.1.2",
     "joi": "^13.3.0",
     "lodash": "^4.17.10",
+    "md5": "^2.2.1",
     "morgan": "^1.9.0",
     "pg": "^7.4.3",
     "pg-hstore": "^2.3.2",
@@ -43,7 +44,10 @@
     "babel-preset-env": "^1.7.0",
     "eslint": "^4.19.1",
     "eslint-plugin-import": "^2.12.0",
+    "eslint-plugin-jest": "^21.17.0",
     "eslint-watch": "^3.1.5",
-    "nodemon": "^1.17.5"
+    "jest": "^23.1.0",
+    "nodemon": "^1.17.5",
+    "supertest": "^3.1.0"
   }
 }

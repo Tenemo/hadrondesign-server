@@ -3,10 +3,12 @@
         "eslint:recommended",
         "plugin:import/recommended",
         "plugin:import/warnings",
-        "plugin:import/errors"
+        "plugin:import/errors",
+        "plugin:jest/recommended"
     ],
     "plugins": [
-        "import"
+        "import",
+        "jest"
     ],
     "parserOptions": {
         "ecmaVersion": 6,
@@ -14,7 +16,8 @@
     },
     "env": {
         "es6": true,
-        "node": true
+        "node": true,
+        "jest": true
     },
     "rules": {
         "quotes": [

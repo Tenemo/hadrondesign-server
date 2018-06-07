@@ -1,3 +1,5 @@
+import Sequelize from 'sequelize';
+
 export default (sequelize, DataType) => {
     const game = sequelize.define('game', {
         game_number: {
@@ -28,7 +30,7 @@ export default (sequelize, DataType) => {
             validate: {
                 notEmpty: true
             }
-        }, game_isFinished: {
+        }, game_isWon: {
             type: DataType.BOOLEAN,
             allowNull: false,
             defaultValue: false,
@@ -46,6 +48,7 @@ export default (sequelize, DataType) => {
         }, game_start_time: {
             type: DataType.DATE,
             allowNull: false,
+            defaultValue: Sequelize.NOW,
             validate: {
                 notEmpty: true
             }
