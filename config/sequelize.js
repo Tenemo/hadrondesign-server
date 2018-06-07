@@ -40,9 +40,10 @@ fs.readdirSync(modelsDir)
     });
 
 sequelize
-    .sync({ force: true })
+    .sync()
+    //.sync({ force: true })
     .then(() => {
-        console.log(chalkWarning('Old database dropped!'));
+        //console.log(chalkWarning('Old database dropped!'));
         console.log(chalkSuccess('Database synchronized')); // eslint-disable-line no-console
     }).catch(err => {
         console.log(chalkError('Rolled back, an error occured:')); // eslint-disable-line no-console

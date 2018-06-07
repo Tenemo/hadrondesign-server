@@ -1,4 +1,5 @@
-import seedrandom from 'seedrandom';
+import seedrandom from 'seedrandom'; // eslint-disable-line no-unused-vars
+import md5 from 'md5';
 
 /**
  * Inserts a single cross at given coordinates, updating blankCount and flipping all adjacent potentially conflicting tiles to 2
@@ -145,6 +146,8 @@ function generate(size, seed = Date.now()) {
         blankCount: size * size,
         seed : seed
     };
+
+    Math.seedrandom(seed);
 
     // setting board.tiles array size and filling it with blanks, 0's
     for (let i = 0; i < size; i++) {

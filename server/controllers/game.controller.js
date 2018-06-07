@@ -14,27 +14,27 @@ const Game = db.game;
  * @returns {array} - sends back generated board array of tile rows
  */
 function newGame(req, res, next) {
-    Game.destroy({
-        where: {
-            game_id: req.body.previousId
-        }
-    });
+    if (req.body.previousId != null) {
+        Game.destroy({
+            where: {
+                game_id: req.body.previousId
+            }
+        });
+    }
     const board = generateBoard(req.body.size, req.body.seed);
     const hashString = (Date.now() + board.tiles).toString();
-    console.log('hashString: ' + hashString);
-    console.log('req.body.seed: ' + req.body.seed);
     const game = Game.build({
         game_id: md5(hashString),
         game_size: board.size,
-        game_seed: board.seed,
+        game_seed: (board.seed),
         game_isSeedCustom: (() => {
-            if (req.body.seed == null) return false
-            else return true 
-        })
-
+            if (req.body.seed == null) return false;
+            else if (req.body.seed != null) return true;
+        })(),
+        isWon: false
     });
     game.save()
-        .then(res.send(board.tiles))
+        .then(() => res.send(board.tiles))
         .catch(err => next(err));
 }
 
