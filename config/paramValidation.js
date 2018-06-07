@@ -11,6 +11,9 @@ export default {
     },
     // PUT /api/game/:id
     winGame: {
+        params: {
+            id: Joi.string().length(32).alphanum().lowercase().options({ convert: false }).required()
+        },
         body: {
             moves: Joi.array().items(Joi.string().length(2).alphanum()).max(5000).required(),
             playerName: Joi.string().max(16).alphanum()

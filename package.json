@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "nodemon -w config -w server -w server/server.js --exec \"babel-node server/server.js\"",
+    "start": "nodemon -w config -w server -w server/server.js --exec \"npm run lint && babel-node server/server.js\"",
     "nodemon": "nodemon -w config -w server -w server/server.js",
     "lint": "esw server/server.js server",
     "lint:watch": "npm run lint -- --watch",

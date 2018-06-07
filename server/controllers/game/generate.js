@@ -132,7 +132,7 @@ function mixIns(board) {
  * @param {string} seed - Optional seed for board generation, current date by default
  * @returns {object} - Generated board
  */
-function generate(size, seed = Date.now()) {
+function generate(size, seed = md5(Date.now() + size)) {
 
     /**
      * Main board object, containing current game state

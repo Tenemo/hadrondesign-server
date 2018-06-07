@@ -14,10 +14,12 @@ const Game = db.game;
  * @returns {array} - sends back generated board array of tile rows
  */
 function newGame(req, res, next) {
+
     if (req.body.previousId != null) {
         Game.destroy({
             where: {
-                game_id: req.body.previousId
+                game_id: req.body.previousId,
+                game_isWon: false
             }
         });
     }
@@ -47,7 +49,9 @@ function newGame(req, res, next) {
  * @returns {boolean} - sends back isWon boolean, false should only happen in extreme cases
  */
 function winGame(req, res, next) {
-
+    console.log('winGame() function represent');
+    let isWon = false;
+    res.send(isWon);
 }
 
 export default { newGame, winGame };
