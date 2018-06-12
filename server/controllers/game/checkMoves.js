@@ -7,7 +7,7 @@ import { alphaToNum } from './moveConverter';
  * @return {boolean}
  */
 function checkMoves(game) {
-    const board = generateBoard(game.game_size, game.game_seed).tiles;
+    const board = generateBoard(game.game_size, game.game_seed, game.game_easyMode).tiles;
     let moves = [];
     if (typeof game.game_moves === 'string' || game.game_moves instanceof String) {
         moves = game.game_moves.split(',');
@@ -40,10 +40,11 @@ function checkMoves(game) {
             board[element[1]][element[0] - 1] = flip(board[element[1]][element[0] - 1]);
         }
     });
-    // board.forEach((element) => {
-    //     if (element.includes(1)) throw new Error('These moves don\'t flip all tiles!');
-    // });
-    return true;
+    let isWon = true;
+    board.forEach((element) => {
+        if (element.includes(1)) isWon = false;
+    });
+    return isWon;
 }
 
 /**
@@ -51,7 +52,7 @@ function checkMoves(game) {
  * @param {num} tile -tile
  * @return {num}
  */
-function flip(tile) {
+export function flip(tile) {
     try {
         if (tile === 2) return 2;
         if (tile === 1) return 0;

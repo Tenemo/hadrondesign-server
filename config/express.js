@@ -9,13 +9,7 @@ import winstonInstance from './winston';
 import routes from '../server/routes/index.route';
 import config from './config';
 import APIError from '../server/helpers/APIError';
-
-import Promise from 'bluebird';
-Promise.config({
-    warnings: {
-        wForgottenReturn: false
-    }
-});
+import cors from 'cors';
 
 const app = express();
 
@@ -23,11 +17,15 @@ if (config.env === 'development') {
     app.use(logger('dev'));
 }
 
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.use(cookieParser());
+
+// console.log('DELAYING...');
+// app.use(function(req,res,next){setTimeout(next,500);});
 
 if (config.env === 'development') {
     expressWinston.requestWhitelist.push('body');
@@ -68,7 +66,6 @@ if (config.env !== 'test') {
         winstonInstance,
     }));
 }
-
 // error handler, send stacktrace only during development
 app.use((err, req, res, next) => // eslint-disable-line no-unused-vars
     res.status(err.status).json({

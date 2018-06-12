@@ -24,7 +24,7 @@ export default (sequelize, DataType) => {
             validate: {
                 notEmpty: true
             }
-        }, game_isSeedCustom: {
+        }, game_easyMode: {
             type: DataType.BOOLEAN,
             allowNull: false,
             validate: {
@@ -42,6 +42,14 @@ export default (sequelize, DataType) => {
         }, game_player_name: {
             type: DataType.STRING(32)
         }, game_move_count: {
+            type: DataType.INTEGER
+        }, game_isSeedCustom: {
+            type: DataType.BOOLEAN,
+            allowNull: false,
+            validate: {
+                notEmpty: true
+            }
+        }, game_time: {
             type: DataType.INTEGER
         }, game_moves: {
             type: DataType.TEXT

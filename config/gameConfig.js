@@ -1,5 +1,5 @@
 const gameConfig = {
-    minSize: 6,
+    minSize: 4,
     maxSize: 16,
     alphabet: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 };

@@ -1,4 +1,3 @@
-import httpStatus from 'http-status';
 import db from '../../config/sequelize';
 import md5 from 'md5';
 import generateBoard from './game/generate';
@@ -6,14 +5,17 @@ import checkMoves from './game/checkMoves';
 import calculateScore from './game/score';
 import { randBetween } from '../helpers/helpers';
 import gameConfig from '../../config/gameConfig';
+import sequelize from 'sequelize';
 
 const Game = db.game;
+const Op = sequelize.Op;
 
 /**
  * - POST /api/game/new
  * - Initialize new game
  * @param {number} req.body.size - Requested size of the board
  * @param {string} req.body.seed - Optional seed for board generation
+ * @param {string} req.body.easyMode - Optional parameter for much easier board generation
  * @param {string} req.body.previousId - Optional id of the previous game, remove it if the user didn't finish it
  * @returns {array} - sends back generated board array of tile rows
  */
@@ -27,20 +29,21 @@ function newGame(req, res, next) {
             }
         });
     }
-    const board = generateBoard(req.body.size, req.body.seed);
-    const hashString = (Date.now() + board.tiles).toString();
+    const board = generateBoard(req.body.size, req.body.seed, req.body.easyMode);
+    const gameId = md5((Date.now() + board.tiles).toString());
     const game = Game.build({
-        game_id: md5(hashString),
+        game_id: gameId,
         game_size: board.size,
-        game_seed: (board.seed),
+        game_seed: board.seed,
         game_isSeedCustom: (() => {
-            if (req.body.seed == null) return false;
+            if (!req.body.seed) return false;
             else if (req.body.seed != null) return true;
         })(),
+        game_easyMode: req.body.easyMode || false,
         isWon: false
     });
     game.save()
-        .then(() => res.send(board.tiles))
+        .then(() => res.json({ board: board.tiles, gameId, size: board.size }))
         .catch(err => next(err));
 }
 
@@ -57,28 +60,29 @@ function winGame(req, res, next) {
     Game.findOne({ where: { game_id: req.params.id } })
         .then((game) => {
             if (!game) {
-                const err = new Error('Game doesn\'t exist');
-                err.status = httpStatus.NOT_FOUND;
-                return next(err);
+                console.log('GAME DOESN\'T EXIST');
+                return res.json({ info: 'Game doesn\'t exist' });
             }
-            // if (game.game_isWon === true) {
-            //     res.send([game.game_isWon, game.game_score]);
-            //     return;
-            // }
+            if (game.game_isWon === true) {
+                return res.json({ isWon: game.game_isWon, score: game.game_score, info: 'You\'ve won already' });
+            }
             game.game_moves = req.body.moves.toString();
             const isWon = checkMoves(game);
             if (!isWon) {
-                const err = new Error('Provided moves are either illegal or don\'t result in a win');
-                err.status = httpStatus.BAD_REQUEST;
-                return next(err);
+                console.log('GAME LOST');
+                return res.status(400).send(res);
             }
+            console.log('GAME WON');
+            console.log('PLAYER: ' + req.body.playerName);
+            console.log('MOVE COUNT: ' + req.body.moves.length);
             game.game_player_name = req.body.playerName;
             game.game_end_time = Date.now();
+            game.game_time = game.game_end_time - game.game_start_time;
             game.game_move_count = req.body.moves.length;
             game.game_isWon = isWon;
             game.game_score = calculateScore(game);
             return game.save()
-                .then(() => { return res.send([isWon, game.game_score]); })
+                .then(() => { return res.json({ score: game.game_score, time: game.game_time, moveCount: game.game_move_count }); })
                 .catch(err => next(err));
         })
         .catch(err => next(err));
@@ -89,28 +93,57 @@ function highScores(req, res, next) {
         limit: 20,
         where: {
             game_isWon: true,
-            game_isSeedCustom: false
+            game_isSeedCustom: false,
+            game_player_name: {[Op.ne]: ''}
         },
         order: [
-            ['game_score', 'DESC']
+            ['game_score', 'DESC'],
+            ['game_size', 'DESC'],
         ],
-        attributes: ['game_score', 'game_player_name', 'game_size']
+        attributes: ['game_score', 'game_player_name', 'game_size', 'game_move_count', 'game_time']
     })
         .then(scores => res.json(scores))
         .catch(err => next(err));
 
 }
 
+export function updateScores(req, res, next) {
+    Game.findAll({
+        where: {
+            game_isWon: true,
+            game_isSeedCustom: false,
+            game_player_name: {[Op.ne]: ''}
+        }
+    })
+        .then(result => {
+            result.forEach(element => {
+                Game.findOne({ where: { game_id: element.game_id } })
+                    .then((game) => {
+                        let oldScore = game.game_score;
+                        game.game_score = calculateScore(game);
+                        return game.save().then(() => {
+                            console.log('Updated ' + element.game_id + '\'s score from ' + oldScore + ' to ' + game.game_score);
+                        });
+                    });
+            });
+            console.log(result.length);
+            res.send('Updated score in ' + result.length + ' rows');
+        }
+    );
+}
+
+/**
+ * - for filling the database with random entries
+ */
 export function fakeData(res, req, next) {
     for (let i = 0; i < 10000; i++) {
-        console.log('Preparing fake game #' + i + ' before inserting into database');
         const game = Game.create({
             game_id: md5(Date.now()),
             game_size: randBetween(gameConfig.minSize, gameConfig.maxSize),
             game_seed: (Date.now() * 2),
             game_isSeedCustom: false,
             game_isWon: true,
-            game_score: randBetween(1000, 20000),
+            game_score: randBetween(1000, 200000),
             game_player_name: md5(Date.now()).substring(0, 3),
             game_move_count: randBetween(10, 50),
             game_moves: (() => {
@@ -124,15 +157,14 @@ export function fakeData(res, req, next) {
                 return moves.toString();
             })(),
             game_start_time: Date.now() - randBetween(1000, 20000),
-            game_end_time: Date.now() + randBetween(1000, 20000)
+            game_end_time: Date.now() + randBetween(1000, 20000),
+            gamet_time: game.game_end_time - game.game_start_time
         }).
-        then(game => {
-        })
-        .catch(err => next(err));
+            then(() => {
+                return;
+            })
+            .catch(err => next(err));
     }
 }
-    // try {
-    //     setTimeout(fakeData(), 10000);
-    // } catch(err) {} // eslint-disable-line no-empty
 
-    export default { newGame, winGame, highScores, fakeData };
+export default { newGame, winGame, highScores, updateScores };

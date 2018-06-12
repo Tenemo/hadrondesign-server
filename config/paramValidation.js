@@ -6,8 +6,9 @@ export default {
     newGame: {
         body: {
             size: Joi.number().integer().min(gameConfig.minSize).max(gameConfig.maxSize).required(),
-            seed: Joi.string().max(256),
-            previousId: Joi.string().length(32).alphanum().lowercase()
+            seed: Joi.string().max(256).allow(null).allow('').trim(),
+            previousId: Joi.string().length(32).alphanum().lowercase().allow(null),
+            easyMode: Joi.boolean()
         }
     },
     // PUT /api/game/:id
@@ -16,8 +17,8 @@ export default {
             id: Joi.string().length(32).alphanum().lowercase().options({ convert: false }).required()
         },
         body: {
-            moves: Joi.array().items(Joi.string().alphanum().max(4)).max(5000).required(),
-            playerName: Joi.string().max(16).alphanum()
+            moves: Joi.array().items(Joi.string().alphanum().max(4)).max(10000).required(),
+            playerName: Joi.string().max(32).allow('').trim()
         }
     }
 };

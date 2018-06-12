@@ -15,6 +15,10 @@ router.route('/:id')
 
 router.route('/highScores')
     /* GET /api/game/highScores - Get highscores */
-    .get(gameController.fakeData);
+    .get(gameController.highScores);
+
+// router.route('/update')
+//     /* GET /api/game/highScores - Get highscores */
+//     .get(gameController.updateScores);
 
 export default router;

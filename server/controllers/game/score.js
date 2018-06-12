@@ -6,19 +6,19 @@ import gameConfig from '../../../config/gameConfig';
  */
 function score(game) {
     const minSize = gameConfig.minSize;
-    if (game.game_size < minSize || game.game_isSeedCustom) return 0;
+    if (game.game_size < minSize || game.game_isSeedCustom === true || game.game_easyMode === true) return null;
 
-    const moveScore = game.game_size * 4 / game.game_move_count;
-    // console.log('moveScore: ' + moveScore);
+    const sizeScore = Math.pow(2.5, game.game_size);
+    console.log('sizeScore: ' + sizeScore);
 
-    const sizeScore = 1 + ((game.game_size - minSize) * 2);
-    // console.log('sizeScore: ' + sizeScore);
+    const moveScore = game.game_size/Math.sqrt(game.game_move_count);
+    console.log('moveScore: ' + moveScore);
 
-    const timeScore = (sizeScore * 10000)/(game.game_end_time - game.game_start_time);
-    // console.log('timeScore: ' + timeScore);
+    const timeScore = game.game_size/(Math.sqrt((game.game_end_time - game.game_start_time)/1000));
+    console.log('timeScore: ' + timeScore);
 
-    const result = moveScore * timeScore * sizeScore * 1000;
-    // console.log('RESULT: ' + result);
+    const result = sizeScore * moveScore * Math.sqrt(timeScore);
+    console.log('TOTAL SCORE: ' + result);
 
     return Math.trunc(result);
 }

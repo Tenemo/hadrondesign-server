@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "nodemon -w config -w server -w server/server.js --exec \"npm run lint && babel-node --max_old_space_size=4096 --optimize_for_size --max_executable_size=4096 --stack_size=4096 server/server.js\"",
+    "start": "nodemon -w config -w server -w server/server.js --exec \"npm run lint && babel-node server/server.js\"",
     "nodemon": "nodemon -w config -w server -w server/server.js",
     "lint": "esw server/server.js server",
     "lint:watch": "npm run lint -- --watch",
@@ -23,6 +23,7 @@
     "bluebird": "^3.5.1",
     "body-parser": "^1.18.3",
     "cookie-parser": "^1.4.3",
+    "cors": "^2.8.4",
     "dotenv": "^5.0.1",
     "express": "^4.16.3",
     "express-validation": "^1.0.2",

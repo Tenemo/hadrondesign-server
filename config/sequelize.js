@@ -3,9 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import _ from 'lodash';
 import config from './config';
-import { chalkSuccess, chalkWarning, chalkProcessing, chalkError } from './chalkConfig';
-
-import { fakeData } from '../server/controllers/game.controller'
+import { chalkSuccess, chalkProcessing, chalkError } from './chalkConfig';
 
 const modelsDir = path.normalize(`${__dirname}/../server/models`);
 let db = {};
@@ -48,11 +46,8 @@ fs.readdirSync(modelsDir)
 
 sequelize
     .sync()
-    //.sync({ force: true })
     .then(() => {
-        //console.log(chalkWarning('Old database dropped!'));
         console.log(chalkSuccess('Database synchronized')); // eslint-disable-line no-console
-        //fakeData();
     }).catch(err => {
         console.log(chalkError('Rolled back, an error occured:')); // eslint-disable-line no-console
         console.log(err); // eslint-disable-line no-console
