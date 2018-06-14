@@ -60,7 +60,6 @@ function winGame(req, res, next) {
     Game.findOne({ where: { game_id: req.params.id } })
         .then((game) => {
             if (!game) {
-                console.log('GAME DOESN\'T EXIST');
                 return res.json({ info: 'Game doesn\'t exist' });
             }
             if (game.game_isWon === true) {
@@ -69,7 +68,6 @@ function winGame(req, res, next) {
             game.game_moves = req.body.moves.toString();
             const isWon = checkMoves(game);
             if (!isWon) {
-                console.log('GAME LOST');
                 return res.status(400).send(res);
             }
             console.log('GAME WON');
@@ -82,8 +80,7 @@ function winGame(req, res, next) {
             game.game_isWon = isWon;
             game.game_score = calculateScore(game);
             return game.save()
-                .then(() => { return res.json({ score: game.game_score, time: game.game_time, moveCount: game.game_move_count }); })
-                .catch(err => next(err));
+                .then(() => { return res.json({ score: game.game_score, time: game.game_time, moveCount: game.game_move_count, seed: game.game_seed, isSeedCustom: game.game_isSeedCustom }); });
         })
         .catch(err => next(err));
 }
@@ -127,13 +124,14 @@ export function updateScores(req, res, next) {
                     });
             });
             console.log(result.length);
-            res.send('Updated score in ' + result.length + ' rows');
+            res.send('Updated score in ' + result.length + ' rows')
+            .catch(err => next(err));
         }
     );
 }
 
 /**
- * - for filling the database with random entries
+ * - for testing with a database of random entries
  */
 export function fakeData(res, req, next) {
     for (let i = 0; i < 10000; i++) {

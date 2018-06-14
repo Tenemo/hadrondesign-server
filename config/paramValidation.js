@@ -7,7 +7,7 @@ export default {
         body: {
             size: Joi.number().integer().min(gameConfig.minSize).max(gameConfig.maxSize).required(),
             seed: Joi.string().max(256).allow(null).allow('').trim(),
-            previousId: Joi.string().length(32).alphanum().lowercase().allow(null),
+            previousId: Joi.string().length(32).alphanum().lowercase().allow(null).allow(''),
             easyMode: Joi.boolean()
         }
     },
