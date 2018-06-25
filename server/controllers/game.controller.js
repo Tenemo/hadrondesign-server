@@ -119,11 +119,10 @@ export function updateScores(req, res, next) {
                         let oldScore = game.game_score;
                         game.game_score = calculateScore(game);
                         return game.save().then(() => {
-                            console.log('Updated ' + element.game_id + '\'s score from ' + oldScore + ' to ' + game.game_score);
+                            console.log('Updated ' + element.game_id + '\'s score from ' + oldScore + ' to ' + game.game_score); //eslint-disable-line no-console
                         });
                     });
             });
-            console.log(result.length);
             res.send('Updated score in ' + result.length + ' rows')
             .catch(err => next(err));
         }

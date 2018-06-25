@@ -18,7 +18,7 @@ function generate(size, seed, easyMode = false) {
      * @property {number} blankCount - Number of left nonconflicting tiles, for safe generation purposes
      */
     if (!seed) {
-        seed = md5(Date.now() + size + Math.random());
+        seed = md5(Date.now() + size + Math.random()).slice(0, -16);
     }
     let board = {
         size: size,

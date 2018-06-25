@@ -14,6 +14,10 @@ const sequelize = new Sequelize(
     config.postgres.user,
     config.postgres.passwd,
     {
+        logging: (() => {
+            if (config.env === 'development') return true;
+            else return false;
+        })(),
         dialect: 'postgres',
         port: config.postgres.port,
         host: config.postgres.host,
