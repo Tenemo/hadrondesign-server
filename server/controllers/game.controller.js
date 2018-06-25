@@ -91,6 +91,7 @@ function highScores(req, res, next) {
         where: {
             game_isWon: true,
             game_isSeedCustom: false,
+            game_easyMode: false,
             game_player_name: {[Op.ne]: ''}
         },
         order: [
